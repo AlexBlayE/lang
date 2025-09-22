@@ -1,0 +1,9 @@
+let num = 3 + 2
+
+let res = num + 5
+
+func duplicate(num Number): Number {
+    return num*2
+}
+
+print(duplicate(50))

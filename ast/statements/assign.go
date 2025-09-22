@@ -6,7 +6,7 @@ import (
 
 type AssignStatement struct {
 	Name string
-	Elem runtime.Type
+	Elem runtime.Expression
 }
 
 func (as *AssignStatement) Visit(v runtime.StmVisitor) error {

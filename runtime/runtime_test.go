@@ -35,5 +35,43 @@ func TestLetProgram(t *testing.T) {
 }
 
 // TODO: function test
+func TestFunctionProgram(t *testing.T) {
+	r := runtime.Runtime{
+		StmDispatcher:  dispatchers.MapStatementDispatcher,
+		ExprDispatcher: dispatchers.MapExpressionDispatcher,
+		MemManager:     &memeorymanager.MapMemManager{}}
+
+	program := []runtime.Statement{
+		&statements.LetStatement{
+			Name: "count",
+			Elem: &expressions.Literal{Type: &types.Number{Val: 0}},
+		},
+
+		&statements.FuncStatement{
+			Name: "f1",
+			Args: []statements.ArgsPair{
+				{VarName: "num", Content: &types.Number{}},
+			},
+			Block: []runtime.Statement{
+				&statements.AssignStatement{
+					Name: "count",
+					Elem: &expressions.Variable{Ref: "num"},
+				},
+			},
+			CanReturn: false,
+		},
+
+		&statements.ExprStatement{Expr: &expressions.Call{
+			Ref: "f1",
+			// TODO: cambiar lo de runtime.Type per runtime.Expression o alomillor no
+			Args: []runtime.Type{&types.Number{Val: 200}},
+		}},
+	}
+
+	err := r.RunProgram(program)
+	if err != nil {
+		t.Error("Function runtime test failed")
+	}
+}
 
 // TODO: stdlib print test

@@ -23,6 +23,15 @@ func (mmm *MapMemManager) Get(key string) runtime.Type {
 
 func (mmm *MapMemManager) Set(key string, val runtime.Type) {
 	last := mmm.Vars.Len() - 1
+
+	for i := last; i >= 0; i-- {
+		elem := mmm.Vars.Index(i)[key]
+		if elem != nil {
+			mmm.Vars.Index(i)[key] = val
+			return
+		}
+	}
+
 	mmm.Vars.Index(last)[key] = val
 }
 
