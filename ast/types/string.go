@@ -6,6 +6,6 @@ type String struct {
 	Val string
 }
 
-func (n *String) Debug() {
-	fmt.Println("Type String -> ", n.Val)
+func (s *String) String() string {
+	return fmt.Sprint(s.Val)
 }

@@ -9,6 +9,6 @@ type Func struct {
 	Val *statements.FuncStatement
 }
 
-func (b *Func) Debug() {
-	fmt.Println("Type Func -> ", b.Val)
+func (f *Func) String() string {
+	return fmt.Sprint(f.Val)
 }

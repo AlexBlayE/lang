@@ -6,6 +6,6 @@ type Boolean struct {
 	Val bool
 }
 
-func (b *Boolean) Debug() {
-	fmt.Println("Type Boolean -> ", b.Val)
+func (b *Boolean) String() string {
+	return fmt.Sprint(b.Val)
 }

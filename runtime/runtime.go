@@ -10,7 +10,7 @@ type MemManager interface {
 }
 
 type Type interface {
-	Debug()
+	String() string
 }
 
 type Statement interface {

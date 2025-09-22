@@ -8,6 +8,7 @@ import (
 	"lang/runtime"
 	"lang/runtime/dispatchers"
 	memeorymanager "lang/runtime/memorymanager"
+	"lang/stdlib"
 	"testing"
 )
 
@@ -63,7 +64,7 @@ func TestFunctionProgram(t *testing.T) {
 		&statements.ExprStatement{Expr: &expressions.Call{
 			Ref: "f1",
 			Args: []runtime.Expression{
-				&expressions.Literal{Type: &types.Number{200}},
+				&expressions.Literal{Type: &types.Number{Val: 200}},
 			},
 		}},
 	}
@@ -74,4 +75,34 @@ func TestFunctionProgram(t *testing.T) {
 	}
 }
 
-// TODO: stdlib print test
+func TestStdlibPrint(t *testing.T) {
+	mmanager := &memeorymanager.MapMemManager{}
+
+	mmanager.PushScope()
+	defer mmanager.PopScope()
+	stdlib.ImportPrint(mmanager)
+
+	r := runtime.Runtime{
+		StmDispatcher:  dispatchers.MapStatementDispatcher,
+		ExprDispatcher: dispatchers.MapExpressionDispatcher,
+		MemManager:     mmanager}
+
+	program := []runtime.Statement{
+		&statements.LetStatement{
+			Name: "text",
+			Elem: &expressions.Literal{Type: &types.String{Val: "Hello World"}},
+		},
+
+		&statements.ExprStatement{Expr: &expressions.Call{
+			Ref: "print",
+			Args: []runtime.Expression{
+				&expressions.Variable{Ref: "text"},
+			},
+		}},
+	}
+
+	err := r.RunProgram(program)
+	if err != nil {
+		t.Error("Function runtime test failed")
+	}
+}
