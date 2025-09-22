@@ -8,6 +8,7 @@ import (
 type VariableVisitor struct {
 	runtime.MemManager
 	runtime.ExprDispatcher
+	runtime.StmDispatcher
 }
 
 func (vv *VariableVisitor) Accept(e runtime.Expression) runtime.Type {

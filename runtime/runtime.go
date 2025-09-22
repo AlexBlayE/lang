@@ -29,9 +29,9 @@ type ExprVisitor interface {
 	Accept(Expression) Type
 }
 
-type StmDispatcher = func(Statement, MemManager, ExprDispatcher) StmVisitor
+type StmDispatcher func(Statement, MemManager, ExprDispatcher) StmVisitor
 
-type ExprDispatcher = func(Expression, MemManager) ExprVisitor
+type ExprDispatcher func(Expression, MemManager, StmDispatcher) ExprVisitor
 
 type Runtime struct {
 	StmDispatcher
