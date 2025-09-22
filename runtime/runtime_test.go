@@ -34,7 +34,6 @@ func TestLetProgram(t *testing.T) {
 	}
 }
 
-// TODO: function test
 func TestFunctionProgram(t *testing.T) {
 	r := runtime.Runtime{
 		StmDispatcher:  dispatchers.MapStatementDispatcher,
@@ -63,8 +62,9 @@ func TestFunctionProgram(t *testing.T) {
 
 		&statements.ExprStatement{Expr: &expressions.Call{
 			Ref: "f1",
-			// TODO: cambiar lo de runtime.Type per runtime.Expression o alomillor no
-			Args: []runtime.Type{&types.Number{Val: 200}},
+			Args: []runtime.Expression{
+				&expressions.Literal{Type: &types.Number{200}},
+			},
 		}},
 	}
 

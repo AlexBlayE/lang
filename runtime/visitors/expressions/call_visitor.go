@@ -29,8 +29,13 @@ func (cv *CallVisitor) Accept(s runtime.Expression) runtime.Type {
 	defer cv.MemManager.PopScope()
 
 	for i, arg := range fs.Args {
-		// TODO: fer que args sigui una expressió que es pugui resoldre
-		cv.MemManager.Set(arg.VarName, c.Args[i])
+		ex := c.Args[i]
+
+		// TODO: alomillor ed es nil
+		ed := cv.ExprDispatcher(ex, cv.MemManager, cv.StmDispatcher)
+		t := ex.Visit(ed)
+
+		cv.MemManager.Set(arg.VarName, t)
 	}
 
 	r := runtime.Runtime{
