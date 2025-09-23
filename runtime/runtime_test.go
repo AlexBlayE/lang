@@ -7,7 +7,7 @@ import (
 	"lang/ast/types"
 	"lang/runtime"
 	"lang/runtime/dispatchers"
-	memeorymanager "lang/runtime/memorymanager"
+	"lang/runtime/memorymanager"
 	"lang/stdlib"
 	"testing"
 )
@@ -16,7 +16,7 @@ func TestLetProgram(t *testing.T) {
 	r := runtime.Runtime{
 		StmDispatcher:  dispatchers.MapStatementDispatcher,
 		ExprDispatcher: dispatchers.MapExpressionDispatcher,
-		MemManager:     &memeorymanager.MapMemManager{}}
+		MemManager:     &memorymanager.MapMemManager{}}
 
 	program := []runtime.Statement{
 		&statements.LetStatement{Name: "var1", Elem: &expressions.Literal{
@@ -39,7 +39,7 @@ func TestFunctionProgram(t *testing.T) {
 	r := runtime.Runtime{
 		StmDispatcher:  dispatchers.MapStatementDispatcher,
 		ExprDispatcher: dispatchers.MapExpressionDispatcher,
-		MemManager:     &memeorymanager.MapMemManager{}}
+		MemManager:     &memorymanager.MapMemManager{}}
 
 	program := []runtime.Statement{
 		&statements.LetStatement{
@@ -67,6 +67,12 @@ func TestFunctionProgram(t *testing.T) {
 				&expressions.Literal{Type: &types.Number{Val: 200}},
 			},
 		}},
+
+		&statements.TestAssertion{ //
+			T:       t,
+			VarName: "count",
+			Type:    &types.Number{Val: 200},
+		},
 	}
 
 	err := r.RunProgram(program)
@@ -76,7 +82,7 @@ func TestFunctionProgram(t *testing.T) {
 }
 
 func TestStdlibPrint(t *testing.T) {
-	mmanager := &memeorymanager.MapMemManager{}
+	mmanager := &memorymanager.MapMemManager{}
 
 	mmanager.PushScope()
 	defer mmanager.PopScope()
