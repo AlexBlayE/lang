@@ -23,7 +23,6 @@ func ImportPrint(mm runtime.MemManager) {
 					},
 				},
 			},
-			CanReturn: false,
 		}},
 	)
 }

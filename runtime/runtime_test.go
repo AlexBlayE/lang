@@ -7,7 +7,7 @@ import (
 	"lang/ast/types"
 	"lang/runtime"
 	"lang/runtime/dispatchers"
-	memeorymanager "lang/runtime/memorymanager"
+	"lang/runtime/memorymanager"
 	"lang/stdlib"
 	"testing"
 )
@@ -16,7 +16,7 @@ func TestLetProgram(t *testing.T) {
 	r := runtime.Runtime{
 		StmDispatcher:  dispatchers.MapStatementDispatcher,
 		ExprDispatcher: dispatchers.MapExpressionDispatcher,
-		MemManager:     &memeorymanager.MapMemManager{}}
+		MemManager:     &memorymanager.MapMemManager{}}
 
 	program := []runtime.Statement{
 		&statements.LetStatement{Name: "var1", Elem: &expressions.Literal{
@@ -39,7 +39,7 @@ func TestFunctionProgram(t *testing.T) {
 	r := runtime.Runtime{
 		StmDispatcher:  dispatchers.MapStatementDispatcher,
 		ExprDispatcher: dispatchers.MapExpressionDispatcher,
-		MemManager:     &memeorymanager.MapMemManager{}}
+		MemManager:     &memorymanager.MapMemManager{}}
 
 	program := []runtime.Statement{
 		&statements.LetStatement{
@@ -58,7 +58,6 @@ func TestFunctionProgram(t *testing.T) {
 					Elem: &expressions.Variable{Ref: "num"},
 				},
 			},
-			CanReturn: false,
 		},
 
 		&statements.ExprStatement{Expr: &expressions.Call{
@@ -67,6 +66,12 @@ func TestFunctionProgram(t *testing.T) {
 				&expressions.Literal{Type: &types.Number{Val: 200}},
 			},
 		}},
+
+		&statements.TestAssertion{ //
+			T:       t,
+			VarName: "count",
+			Type:    &types.Number{Val: 200},
+		},
 	}
 
 	err := r.RunProgram(program)
@@ -76,7 +81,7 @@ func TestFunctionProgram(t *testing.T) {
 }
 
 func TestStdlibPrint(t *testing.T) {
-	mmanager := &memeorymanager.MapMemManager{}
+	mmanager := &memorymanager.MapMemManager{}
 
 	mmanager.PushScope()
 	defer mmanager.PopScope()
@@ -106,3 +111,52 @@ func TestStdlibPrint(t *testing.T) {
 		t.Error("Function runtime test failed")
 	}
 }
+
+func TestReturnFunctions(t *testing.T) {
+	r := runtime.Runtime{
+		StmDispatcher:  dispatchers.MapStatementDispatcher,
+		ExprDispatcher: dispatchers.MapExpressionDispatcher,
+		MemManager:     &memorymanager.MapMemManager{}}
+
+	program := []runtime.Statement{
+		&statements.FuncStatement{
+			Name: "f1",
+			Args: []statements.ArgsPair{
+				{VarName: "num", Content: &types.Number{}},
+			},
+			Block: []runtime.Statement{
+				&statements.ReturnStatement{
+					Returnable: &operations.AddOperation{
+						L: &expressions.Literal{Type: &types.Number{Val: 12.5}},
+						R: &expressions.Variable{Ref: "num"},
+					},
+				},
+			},
+		},
+
+		&statements.LetStatement{
+			Name: "res",
+			Elem: &expressions.Call{
+				Ref: "f1",
+				Args: []runtime.Expression{
+					&expressions.Literal{Type: &types.Number{Val: 12.5}},
+				},
+			},
+		},
+
+		&statements.TestAssertion{ //
+			T:       t,
+			VarName: "res",
+			Type:    &types.Number{Val: 25},
+		},
+	}
+
+	err := r.RunProgram(program)
+	if err != nil {
+		t.Error("Function runtime test failed")
+	}
+}
+
+// TODO: test operations
+
+// TODO: test for

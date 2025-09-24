@@ -1,7 +1,9 @@
 package expressions_visitors
 
 import (
+	"errors"
 	"lang/ast/expressions"
+	"lang/ast/statements"
 	"lang/ast/types"
 	"lang/runtime"
 )
@@ -31,8 +33,11 @@ func (cv *CallVisitor) Accept(s runtime.Expression) runtime.Type {
 	for i, arg := range fs.Args {
 		ex := c.Args[i]
 
-		// TODO: alomillor ed es nil
 		ed := cv.ExprDispatcher(ex, cv.MemManager, cv.StmDispatcher)
+		if ed == nil {
+			return nil
+		}
+
 		t := ex.Visit(ed)
 
 		cv.MemManager.Set(arg.VarName, t)
@@ -43,11 +48,16 @@ func (cv *CallVisitor) Accept(s runtime.Expression) runtime.Type {
 		ExprDispatcher: cv.ExprDispatcher,
 		MemManager:     cv.MemManager,
 	}
+
 	err := r.RunProgram(fs.Block)
+	if errors.As(err, &statements.ReturnError{}) {
+		re := err.(statements.ReturnError)
+		return re.Res
+	}
+
 	if err != nil {
-		// TODO: crear un error i gestionar-ho
 		return nil
 	}
 
-	return &types.Number{} // TODO: en un futur gestionar el return
+	return nil
 }
