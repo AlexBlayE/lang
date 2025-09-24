@@ -7,3 +7,7 @@ func duplicate(num Number): Number {
 }
 
 print(duplicate(50))
+
+for i -> 5 {
+    num = num + i
+}

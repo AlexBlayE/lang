@@ -157,6 +157,42 @@ func TestReturnFunctions(t *testing.T) {
 	}
 }
 
-// TODO: test operations
+func TestFor(t *testing.T) {
+	r := runtime.Runtime{
+		StmDispatcher:  dispatchers.MapStatementDispatcher,
+		ExprDispatcher: dispatchers.MapExpressionDispatcher,
+		MemManager:     &memorymanager.MapMemManager{},
+	}
 
-// TODO: test for
+	program := []runtime.Statement{
+		&statements.LetStatement{
+			Name: "count",
+			Elem: &expressions.Literal{Type: &types.Number{Val: 0}},
+		},
+
+		&statements.ForStatement{ //
+			I:   "i",
+			Obj: &types.Number{Val: 5},
+			Blok: []runtime.Statement{
+				&statements.AssignStatement{
+					Name: "count",
+					Elem: &operations.AddOperation{
+						L: &expressions.Variable{Ref: "count"},
+						R: &expressions.Variable{Ref: "i"},
+					},
+				},
+			},
+		},
+
+		&statements.TestAssertion{ //
+			T:       t,
+			VarName: "count",
+			Type:    &types.Number{Val: 1 + 2 + 3 + 4 + 5},
+		},
+	}
+
+	err := r.RunProgram(program)
+	if err != nil {
+		t.Error("Function runtime test failed")
+	}
+}
