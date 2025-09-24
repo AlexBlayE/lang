@@ -29,7 +29,5 @@ func (av *AddVisitor) Accept(s runtime.Expression) runtime.Type {
 		return nil
 	}
 
-	// FIXME: com sumo lt + rt si per algún casual no son nuemros?(de moment obligo a que signuin nuemros)
-
 	return &types.Number{Val: lt.Val + rt.Val}
 }

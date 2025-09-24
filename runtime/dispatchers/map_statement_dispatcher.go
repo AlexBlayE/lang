@@ -28,6 +28,9 @@ var mapStatementDispatcherMap map[reflect.Type]memStmInjector = map[reflect.Type
 	reflect.TypeOf(&statements.TestAssertion{}): func(m runtime.MemManager, ed runtime.ExprDispatcher, sd runtime.StmDispatcher) runtime.StmVisitor {
 		return &visitors.TestAssertionVisitor{MemManager: m, ExprDispatcher: ed, StmDispatcher: sd}
 	},
+	reflect.TypeOf(&statements.ReturnStatement{}): func(m runtime.MemManager, ed runtime.ExprDispatcher, sd runtime.StmDispatcher) runtime.StmVisitor {
+		return &visitors.ReturnVisitor{MemManager: m, ExprDispatcher: ed, StmDispatcher: sd}
+	},
 }
 
 func MapStatementDispatcher(

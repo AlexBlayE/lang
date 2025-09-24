@@ -10,10 +10,9 @@ type ArgsPair = struct {
 }
 
 type FuncStatement struct {
-	Name      string
-	Args      []ArgsPair
-	Block     []runtime.Statement
-	CanReturn bool
+	Name  string
+	Args  []ArgsPair
+	Block []runtime.Statement
 }
 
 func (ls *FuncStatement) Visit(v runtime.StmVisitor) error {
